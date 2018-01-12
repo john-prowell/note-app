@@ -2,19 +2,38 @@ console.log('Starting notes.js')
 
 const fs = require('fs');
 
+var fetchNotes = () => {
+  try {
+    var notesString = fs.readFileSync('notes-data.json');
+    return notes = JSON.parse(notesString); // parse into array
+  } catch (e) {
+    return [];
+  }  
+};
+
+var saveNotes = (notes) => {
+  // write stringified notes to json file
+  fs.writeFileSync('notes-data.json', JSON.stringify(notes));  
+};
+
 var addNote = (title, body) => {
-  var notes = [];
+  var notes = fetchNotes();
   var note = {
     title: title,
     body: body
-  };
+  };  
+  // check if duplicate titles
+  var duplicateNotes = notes.filter((note) => {
+    return note.title === title;
+  });
 
-  var notesString = fs.readFileSync(notes-data.json);
-  notes = JSON.parse(notesString); // parse into array
-
-  notes.push(note); // push note into notes array
-  // write stringified notes to json file
-  fs.writeFileSync('notes-data.json', JSON.stringify(notes));
+  if (duplicateNotes.length === 0) {
+    notes.push(note); // push note into notes array
+    saveNotes(notes);
+    return note; // return note that has been added to the function in app.js that called it: notes.addNote
+  } else {
+    console.log('Duplicate Note Title -- Try again!')
+  }
 };
 
 var getAll = () => {
